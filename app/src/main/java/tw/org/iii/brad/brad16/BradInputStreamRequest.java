@@ -17,9 +17,10 @@ public class BradInputStreamRequest extends Request<byte[]> {
     public BradInputStreamRequest(
             int method,
             String url,
+            Map<String,String> params,
             Response.Listener<byte[]> listener,
-            @Nullable Response.ErrorListener errorListener,
-            Map<String,String> params) {
+            @Nullable Response.ErrorListener errorListener
+            ) {
 
         super(method, url, errorListener);
         this.listener = listener;

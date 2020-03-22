@@ -9,10 +9,12 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -24,6 +26,10 @@ import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mesg;
@@ -169,6 +175,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test5(View view){
+        BradInputStreamRequest request = new BradInputStreamRequest(
+                Request.Method.GET,
+                "https://pdfmyurl.com/?url=https://www.pchome.com.tw",
+                null,
+                new Response.Listener<byte[]>() {
+                    @Override
+                    public void onResponse(byte[] response) {
+                        savePDF(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.v("brad", error.toString());
+                    }
+                }
+        );
+
+        MainApp.queue.add(request);
+    }
+
+    private void savePDF(byte[] data){
+        File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File saveFile = new File(downloadDir, "brad.pdf");
+        try {
+            BufferedOutputStream bout =
+                    new BufferedOutputStream(new FileOutputStream(saveFile));
+            bout.write(data);
+            bout.flush();
+            bout.close();
+            Toast.makeText(this, "Save OK", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Log.v("brad", e.toString());
+        }
 
     }
 
