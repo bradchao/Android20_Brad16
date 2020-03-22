@@ -16,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     public void test5(View view){
         BradInputStreamRequest request = new BradInputStreamRequest(
                 Request.Method.GET,
-                "https://pdfmyurl.com/?url=https://www.pchome.com.tw",
+                "https://pdfmyurl.com/?url=https://www.gamer.com.tw",
                 null,
                 new Response.Listener<byte[]>() {
                     @Override
@@ -192,13 +194,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                20*1000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
 
         MainApp.queue.add(request);
     }
 
     private void savePDF(byte[] data){
         File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File saveFile = new File(downloadDir, "brad.pdf");
+        File saveFile = new File(downloadDir, "brad2.pdf");
         try {
             BufferedOutputStream bout =
                     new BufferedOutputStream(new FileOutputStream(saveFile));
